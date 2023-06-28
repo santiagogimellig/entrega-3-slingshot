@@ -31,14 +31,22 @@ productos.forEach((producto)=>{
 function agregarAlCarrito(producto) {
     carrito.push(producto);
     console.log("Producto agregado al carrito:", producto);
-    tablaBody.innerHTML += `
-        <tr>
-            <td>${producto.id}</td>
-            <td>${producto.name}</td>
-            <td>${producto.type}</td>
-            <td>${producto.price}</td>
-        </tr>
+
+    let filaTabla = document.createElement("tr");
+    filaTabla.innerHTML = `
+        <td>${producto.id}</td>
+        <td>${producto.name}</td>
+        <td>${producto.type}</td>
+        <td>${producto.price}</td>
+        <td><button class="btn btn-danger btn-sm">Eliminar</button></td>
     `;
+
+    tablaBody.appendChild(filaTabla);
+
+    let eliminarBoton = filaTabla.querySelector(".btn-danger");
+    eliminarBoton.addEventListener("click", () => {
+    eliminarDelCarrito(producto);
+    });
 }
 
 // // Función para quitar un producto del carrito
