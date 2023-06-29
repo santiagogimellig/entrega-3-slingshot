@@ -28,6 +28,16 @@ productos.forEach((producto)=>{
     });
 });
 
+let botones = document.getElementsByClassName("btn btn-primary");
+for(const boton of botones){
+    boton.onmouseover = () => {
+        boton.classList.replace('btn-primary','btn-warning');
+    }
+    boton.onmouseout = () => {
+        boton.classList.replace('btn-warning','btn-primary');
+    }
+}
+
 
 function agregarAlCarrito(producto) {
     const productoExistente = carrito.find((item) => item.id === producto.id); // busco un producto especifico en el array
