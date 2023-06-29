@@ -30,48 +30,65 @@ productos.forEach((producto)=>{
     });
 });
 
+
 function agregarAlCarrito(producto) {
-    carrito.push(producto);
-    console.log("Producto agregado al carrito:", producto);
+    const productoExistente = carrito.find((item) => item.id === producto.id);
 
-    let filaTabla = document.createElement("tr");
-    filaTabla.innerHTML = `
-        <td>${producto.id}</td>
-        <td>${producto.name}</td>
-        <td>${producto.type}</td>
-        <td>${producto.price}</td>
-        <td><button class="btn btn-danger btn-sm">Eliminar</button></td>
-    `;
+    if (productoExistente) {
+        productoExistente.cantidad++; // Incrementa la cantidad si el producto ya está en el carrito
+        const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`); 
+        const celdaCantidad = filaExistente.querySelector("td:nth-child(4)"); //td:nth-child(4) se utiliza para selecciona la cuarta celda
+        celdaCantidad.textContent = productoExistente.cantidad;
+    } else {
+        producto.cantidad = 1; // Establece la cantidad en 1 si es la primera vez que se agrega al carrito
+        carrito.push(producto);
+        console.log("Producto agregado al carrito:", producto);
 
-    tablaBody.appendChild(filaTabla);
+        let filaTabla = document.createElement("tr");
+        filaTabla.setAttribute("data-producto-id", producto.id);
+        filaTabla.innerHTML = `
+            <td>${producto.id}</td>
+            <td>${producto.name}</td>
+            <td>${producto.type}</td>
+            <td>${producto.cantidad}</td>
+            <td>${producto.price}</td>
+            <td><button class="btn btn-danger btn-sm">Eliminar</button></td>
+        `;
 
-    let botonEliminar = filaTabla.querySelector(".btn-danger");
-    botonEliminar.addEventListener("click", () => {
-    eliminarDelCarrito(producto);
-    });
+        tablaBody.appendChild(filaTabla);
+
+        let botonEliminar = filaTabla.querySelector(".btn-danger");
+        botonEliminar.addEventListener("click", () => {
+            eliminarDelCarrito(producto);
+        });
+    }
+
     calcularTotal();
 }
 
 function eliminarDelCarrito(producto) {
-    // Encuentra el índice del producto en el array carrito
     const index = carrito.findIndex((item) => item.id === producto.id);
-
-    // Si se encontró el producto en el carrito, elimínalo
     if (index !== -1) {
+        const productoExistente = carrito[index];
+        if (productoExistente.cantidad > 1) {
+        productoExistente.cantidad--;
+        const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`);
+        const celdaCantidad = filaExistente.querySelector("td:nth-child(4)");
+        celdaCantidad.textContent = productoExistente.cantidad;
+        } else {
         carrito.splice(index, 1);
+        const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`);
+        filaExistente.remove();
+        }
         console.log("Producto eliminado del carrito:", producto);
-
-      // Elimina la fila correspondiente de la tabla del carrito
-        const filasTabla = tablaBody.getElementsByTagName("tr");
-        filasTabla[index].remove();
+        calcularTotal();
     }
-    calcularTotal();
 }
 
 function calcularTotal() {
     let total = 0;
     carrito.forEach((producto) => {
-        total += producto.price;
+        total += producto.price * producto.cantidad;
     });
 
     const totalElement = document.getElementById("total");
