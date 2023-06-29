@@ -1,9 +1,7 @@
-
 // Carrito de compras
 let carrito = [];
 let shopcontent = document.getElementById("mainGrid");
 let tablaBody = document.getElementById("tablabody");
-let subtotalCarrito = document.getElementById("subtotal");
 let totalCarrito = document.getElementById("total");
 
 productos.forEach((producto)=>{
@@ -17,7 +15,7 @@ productos.forEach((producto)=>{
                 <img class="card-img-top" src=${producto.img}" alt="${producto.name}">
                 <div class="card-body">
                 <h4 class="card-title">${producto.name}</h4>
-                <p class="card-text">$${producto.price}<br> ${producto.type}</p>
+                <p class="card-text">$${producto.price}<br> ${producto.type}</p> 
                 <a href="#" class="btn btn-primary">Comprar</a>
                 </div>
             </div>
@@ -32,12 +30,12 @@ productos.forEach((producto)=>{
 
 
 function agregarAlCarrito(producto) {
-    const productoExistente = carrito.find((item) => item.id === producto.id);
+    const productoExistente = carrito.find((item) => item.id === producto.id); // busco un producto especifico en el array
 
     if (productoExistente) {
         productoExistente.cantidad++; // Incrementa la cantidad si el producto ya está en el carrito
         const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`); 
-        const celdaCantidad = filaExistente.querySelector("td:nth-child(4)"); //td:nth-child(4) se utiliza para selecciona la cuarta celda
+        const celdaCantidad = filaExistente.querySelector("td:nth-child(4)"); // td:nth-child(4) se utiliza para selecciona la cuarta celda
         celdaCantidad.textContent = productoExistente.cantidad;
     } else {
         producto.cantidad = 1; // Establece la cantidad en 1 si es la primera vez que se agrega al carrito
@@ -67,18 +65,18 @@ function agregarAlCarrito(producto) {
 }
 
 function eliminarDelCarrito(producto) {
-    const index = carrito.findIndex((item) => item.id === producto.id);
+    const index = carrito.findIndex((item) => item.id === producto.id); //busco el elemento que quiero eliminar, si findIndex no encuentra nada devuelve -1. Por eso en el if me fijo si es distinto de -1
     if (index !== -1) {
         const productoExistente = carrito[index];
         if (productoExistente.cantidad > 1) {
-        productoExistente.cantidad--;
+        productoExistente.cantidad--; // Elimina un producto si hay mas de uno
         const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`);
-        const celdaCantidad = filaExistente.querySelector("td:nth-child(4)");
+        const celdaCantidad = filaExistente.querySelector("td:nth-child(4)"); // td:nth-child(4) se utiliza para selecciona la cuarta celda
         celdaCantidad.textContent = productoExistente.cantidad;
         } else {
-        carrito.splice(index, 1);
+        carrito.splice(index, 1); // elimina el elemento especifico del array
         const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`);
-        filaExistente.remove();
+        filaExistente.remove(); // si el producto tiene cantidad = 1 entonces elimino la fila del carrito
         }
         console.log("Producto eliminado del carrito:", producto);
         calcularTotal();

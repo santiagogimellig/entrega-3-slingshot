@@ -72,18 +72,16 @@ main{
 }
 
 .main-grid {
-    /* padding-top: 3rem; */
+    padding: 0rem 0rem 2rem 0rem;
     display: grid;
-    grid-template-rows: repeat(2, auto);
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(1, auto);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-areas:
-    "seccion-1" "seccion-1",
-    "seccion-2" "seccion-2";
+    "seccion-1" "seccion-1" "seccion-2" "seccion-2";
     align-items: center;
     justify-content: center;
     justify-items: center;
-    margin: 0rem 0rem 1rem 15rem;
-    /* gap: 2rem; */
+    margin: 0rem 0rem 1rem 3rem; 
     text-align: center;
 }
 
