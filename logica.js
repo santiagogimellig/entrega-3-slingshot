@@ -1,11 +1,10 @@
 // Carrito de compras
-let carrito = [];
-let shopcontent = document.getElementById("mainGrid");
-let tablaBody = document.getElementById("tablabody");
-let totalCarrito = document.getElementById("total");
+const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+const shopcontent = document.getElementById("mainGrid");
+const tablaBody = document.getElementById("tablabody");
+const totalCarrito = document.getElementById("total");
 
 productos.forEach((producto)=>{
-
     let cardContent = document.createElement("div");
     shopcontent.append(cardContent);
     cardContent.className = "card-img"
@@ -43,15 +42,23 @@ function agregarAlCarrito(producto) {
     const productoExistente = carrito.find((item) => item.id === producto.id); // busco un producto especifico en el array
 
     if (productoExistente) {
-        productoExistente.cantidad++; // Incrementa la cantidad si el producto ya está en el carrito
+        productoExistente.cantidad++; // incrementa la cantidad si el producto ya está en el carrito
         const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`); 
         const celdaCantidad = filaExistente.querySelector("td:nth-child(4)"); // td:nth-child(4) se utiliza para selecciona la cuarta celda
         celdaCantidad.textContent = productoExistente.cantidad;
     } else {
-        producto.cantidad = 1; // Establece la cantidad en 1 si es la primera vez que se agrega al carrito
+        producto.cantidad = 1; // establece la cantidad en 1 si es la primera vez que se agrega al carrito
         carrito.push(producto);
         console.log("Producto agregado al carrito:", producto);
+    }
+    mostrarCarrito();
+    calcularTotal();
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+}
 
+function mostrarCarrito(){
+    tablaBody.innerHTML = "";
+    carrito.forEach((producto) => {
         let filaTabla = document.createElement("tr");
         filaTabla.setAttribute("data-producto-id", producto.id);
         filaTabla.innerHTML = `
@@ -62,24 +69,24 @@ function agregarAlCarrito(producto) {
             <td>${producto.price}</td>
             <td><button class="btn btn-danger btn-sm">Eliminar</button></td>
         `;
-
+        
         tablaBody.appendChild(filaTabla);
 
         let botonEliminar = filaTabla.querySelector(".btn-danger");
         botonEliminar.addEventListener("click", () => {
             eliminarDelCarrito(producto);
         });
-    }
-
-    calcularTotal();
+    });
 }
+
+mostrarCarrito();
 
 function eliminarDelCarrito(producto) {
     const index = carrito.findIndex((item) => item.id === producto.id); //busco el elemento que quiero eliminar, si findIndex no encuentra nada devuelve -1. Por eso en el if me fijo si es distinto de -1
-    if (index !== -1) {
+    if (index !== -1) {  
         const productoExistente = carrito[index];
         if (productoExistente.cantidad > 1) {
-        productoExistente.cantidad--; // Elimina un producto si hay mas de uno
+        productoExistente.cantidad--; // elimina un producto si hay mas de uno
         const filaExistente = tablaBody.querySelector(`tr[data-producto-id="${producto.id}"]`);
         const celdaCantidad = filaExistente.querySelector("td:nth-child(4)"); // td:nth-child(4) se utiliza para selecciona la cuarta celda
         celdaCantidad.textContent = productoExistente.cantidad;
@@ -91,6 +98,7 @@ function eliminarDelCarrito(producto) {
         console.log("Producto eliminado del carrito:", producto);
         calcularTotal();
     }
+    localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
 function calcularTotal() {
