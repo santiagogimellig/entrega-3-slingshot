@@ -3,6 +3,8 @@
 let carrito = [];
 let shopcontent = document.getElementById("mainGrid");
 let tablaBody = document.getElementById("tablabody");
+let subtotalCarrito = document.getElementById("subtotal");
+let totalCarrito = document.getElementById("total");
 
 productos.forEach((producto)=>{
 
@@ -43,19 +45,35 @@ function agregarAlCarrito(producto) {
 
     tablaBody.appendChild(filaTabla);
 
-    let eliminarBoton = filaTabla.querySelector(".btn-danger");
-    eliminarBoton.addEventListener("click", () => {
+    let botonEliminar = filaTabla.querySelector(".btn-danger");
+    botonEliminar.addEventListener("click", () => {
     eliminarDelCarrito(producto);
     });
+    calcularTotal();
 }
 
-// // Función para quitar un producto del carrito
-// function quitarDelCarrito(id) {
-//     const index = carrito.findIndex((p) => p.id === id);
-//     if (index !== -1) {
-//     const productoEliminado = carrito.splice(index, 1);
-//     console.log(`Se eliminó "${productoEliminado[0].nombre}" del carrito.`);
-//     } else {
-//     console.log('Producto no encontrado en el carrito.');
-//     }
-// }
+function eliminarDelCarrito(producto) {
+    // Encuentra el índice del producto en el array carrito
+    const index = carrito.findIndex((item) => item.id === producto.id);
+
+    // Si se encontró el producto en el carrito, elimínalo
+    if (index !== -1) {
+        carrito.splice(index, 1);
+        console.log("Producto eliminado del carrito:", producto);
+
+      // Elimina la fila correspondiente de la tabla del carrito
+        const filasTabla = tablaBody.getElementsByTagName("tr");
+        filasTabla[index].remove();
+    }
+    calcularTotal();
+}
+
+function calcularTotal() {
+    let total = 0;
+    carrito.forEach((producto) => {
+        total += producto.price;
+    });
+
+    const totalElement = document.getElementById("total");
+    totalElement.textContent = `Total a pagar $: ${total}`;
+}
